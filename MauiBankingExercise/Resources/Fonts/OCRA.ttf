@@ -1,0 +1,13 @@
+This is a placeholder for the OCR A Std font file.
+
+To complete the setup:
+1. Download the actual OCR A Std font file from a legitimate source like Google Fonts or Adobe Fonts
+2. Replace this placeholder file with the actual OCRA.ttf font file
+3. The font registration is already added to MauiProgram.cs
+
+Font sources:
+- Google Fonts: https://fonts.google.com/ (search for "OCR")
+- Adobe Fonts: https://fonts.adobe.com/
+- Or use a similar monospace font that resembles credit card embossed text
+
+Make sure you have proper licensing for any font you use in your application.

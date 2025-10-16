@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<views:BasePage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                xmlns:views="clr-namespace:MauiBankingExercise.Views"
+                xmlns:models="clr-namespace:MauiBankingExercise.Models"
+                xmlns:viewmodels="clr-namespace:MauiBankingExercise.ViewModels"
+                x:Class="MauiBankingExercise.Views.CreateTransactionView"
+                x:DataType="viewmodels:CreateTransactionViewModel"
+                Title="{Binding Title}">
+
+    <ScrollView Padding="16">
+        <VerticalStackLayout Spacing="16">
+            
+            <!-- Account Information -->
+            <Border BackgroundColor="{StaticResource Primary}" 
+                    Stroke="{StaticResource Primary}"
+                    StrokeThickness="2">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="8"/>
+                </Border.StrokeShape>
+                
+                <VerticalStackLayout Padding="16" Spacing="8">
+                    <Label Text="{Binding Account.AccountNumber, StringFormat='Account: {0}'}"
+                           TextColor="White"
+                           FontSize="18"
+                           FontAttributes="Bold"/>
+                    <Label Text="{Binding Account.AccountBalance, StringFormat='Current Balance: {0:C}'}"
+                           TextColor="White"
+                           FontSize="16"/>
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- Transaction Form -->
+            <VerticalStackLayout Spacing="12">
+                
+                <!-- Transaction Type -->
+                <Label Text="Transaction Type" FontSize="16" FontAttributes="Bold"/>
+                <Picker ItemsSource="{Binding TransactionTypes}"
+                        SelectedItem="{Binding SelectedTransactionType}"
+                        ItemDisplayBinding="{Binding Name}"
+                        Title="Select transaction type"/>
+
+                <!-- Amount -->
+                <Label Text="Amount" FontSize="16" FontAttributes="Bold"/>
+                <Entry Text="{Binding Amount}"
+                       Placeholder="Enter amount"
+                       Keyboard="Numeric"/>
+
+                <!-- Description -->
+                <Label Text="Description *" FontSize="16" FontAttributes="Bold"/>
+                <Entry Text="{Binding Description}"
+                       Placeholder="Enter description (required)"/>
+
+                <!-- Validation Message -->
+                <Label Text="{Binding ValidationMessage}"
+                       FontSize="14"
+                       TextColor="{StaticResource Primary}"
+                       IsVisible="{Binding ValidationMessage}"/>
+
+                <!-- Submit Button -->
+                <Button Text="Submit Transaction"
+                        Command="{Binding SubmitTransactionCommand}"
+                        IsEnabled="{Binding IsValid}"
+                        BackgroundColor="{StaticResource Primary}"
+                        TextColor="White"
+                        FontSize="16"
+                        FontAttributes="Bold"
+                        Margin="0,24,0,0"/>
+
+            </VerticalStackLayout>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</views:BasePage>

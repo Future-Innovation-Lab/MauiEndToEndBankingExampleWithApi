@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<views:BasePage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                xmlns:views="clr-namespace:MauiBankingExercise.Views"
+                xmlns:models="clr-namespace:MauiBankingExercise.Models"
+                xmlns:viewmodels="clr-namespace:MauiBankingExercise.ViewModels"
+                x:Class="MauiBankingExercise.Views.AccountDetailsView"
+                x:DataType="viewmodels:AccountDetailsViewModel"
+                Title="{Binding Title}">
+
+    <Grid RowDefinitions="Auto,*,Auto" Padding="16">
+        
+        <!-- Account Information -->
+        <Border Grid.Row="0" 
+                BackgroundColor="{StaticResource Primary}" 
+                Stroke="{StaticResource Primary}"
+                StrokeThickness="2"
+                Margin="0,0,0,16">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="8"/>
+            </Border.StrokeShape>
+            
+            <VerticalStackLayout Padding="16" Spacing="8">
+                <Label Text="{Binding Account.AccountNumber, StringFormat='Account: {0}'}"
+                       TextColor="White"
+                       FontSize="18"
+                       FontAttributes="Bold"/>
+                <Label Text="{Binding Account.AccountBalance, StringFormat='Balance: {0:C}'}"
+                       TextColor="White"
+                       FontSize="16"/>
+                <Label Text="{Binding Account.DateOpened, StringFormat='Opened: {0:MMM dd, yyyy}'}"
+                       TextColor="White"
+                       FontSize="14"/>
+                <Label Text="{Binding Account.IsActive, StringFormat='Status: {0}'}"
+                       TextColor="White"
+                       FontSize="14"/>
+            </VerticalStackLayout>
+        </Border>
+
+        <!-- Transactions List -->
+        <CollectionView Grid.Row="1" 
+                        ItemsSource="{Binding Transactions}"
+                        SelectionMode="Single"
+                        SelectedItem="{Binding SelectedTransaction}"
+                        SelectionChangedCommand="{Binding TransactionSelectedCommand}"
+                        BackgroundColor="Transparent"
+                        x:DataType="viewmodels:AccountDetailsViewModel">
+            
+            <CollectionView.Header>
+                <Label Text="Transaction History" 
+                       FontSize="18" 
+                       FontAttributes="Bold" 
+                       Margin="0,0,0,8"/>
+            </CollectionView.Header>
+            
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:Transaction">
+                    <Border BackgroundColor="White" 
+                            Stroke="{StaticResource Gray200}"
+                            StrokeThickness="1"
+                            Margin="0,4"
+                            Style="{StaticResource CollectionViewItemBorder}">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="8"/>
+                        </Border.StrokeShape>
+                        
+                        <Grid Padding="12" ColumnDefinitions="*,Auto">
+                            <VerticalStackLayout Grid.Column="0" Spacing="4">
+                                <Label Text="{Binding Description}" 
+                                       FontSize="16"
+                                       FontAttributes="Bold"/>
+                                <Label Text="{Binding TransactionDate, StringFormat='{0:MMM dd, yyyy - HH:mm}'}" 
+                                       FontSize="12"
+                                       TextColor="{StaticResource Gray600}"/>
+                            </VerticalStackLayout>
+                            
+                            <Label Grid.Column="1"
+                                   Text="{Binding Amount, StringFormat='{0:C}'}"
+                                   FontSize="16"
+                                   FontAttributes="Bold"
+                                   VerticalOptions="Center"
+                                   TextColor="{StaticResource Primary}"/>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+            
+            <CollectionView.EmptyView>
+                <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="12">
+                    <Label Text="No transactions found" 
+                           FontSize="16" 
+                           TextColor="{StaticResource Gray600}"
+                           HorizontalOptions="Center"/>
+                </VerticalStackLayout>
+            </CollectionView.EmptyView>
+        </CollectionView>
+
+        <!-- Create Transaction Button -->
+        <Button Grid.Row="2"
+                Text="Create Transaction"
+                Command="{Binding CreateTransactionCommand}"
+                BackgroundColor="{StaticResource Primary}"
+                TextColor="White"
+                FontSize="16"
+                FontAttributes="Bold"
+                Margin="0,16,0,0"/>
+    </Grid>
+</views:BasePage>

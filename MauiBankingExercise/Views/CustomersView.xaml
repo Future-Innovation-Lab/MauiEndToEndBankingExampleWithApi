@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<views:BasePage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:views="clr-namespace:MauiBankingExercise.Views"
+             xmlns:converters="clr-namespace:MauiBankingExercise.Converters"
+             x:Class="MauiBankingExercise.Views.CustomersView"
+             Title="Welcome to MAUI Banking">
+    
+    <views:BasePage.Resources>
+        <ResourceDictionary>
+            <converters:CustomerTypeToColorConverter x:Key="CustomerTypeToColorConverter" />
+            <converters:CustomerTypeToBackgroundConverter x:Key="CustomerTypeToBackgroundConverter" />
+        </ResourceDictionary>
+    </views:BasePage.Resources>
+    <Grid RowDefinitions="Auto,*">
+        <SearchBar Grid.Row="0"
+                   Text="{Binding SearchText}"
+                   Placeholder="Search customers..."
+                   SearchCommand="{Binding SearchCommand}"
+                   Margin="10,5"
+                   BackgroundColor="White"
+                   TextColor="Black"
+                   PlaceholderColor="Gray" />
+        
+        <CollectionView Grid.Row="1"
+            ItemsSource="{Binding Customers}"
+            SelectionMode="Single"
+            SelectedItem="{Binding SelectedCustomer}"
+            SelectionChangedCommand="{Binding CustomerSelectedCommand}"
+            BackgroundColor="Transparent">
+            
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Border Margin="5" 
+                            Padding="10" 
+                            StrokeThickness="1"
+                            BackgroundColor="{Binding CustomerType.Name, Converter={StaticResource CustomerTypeToBackgroundConverter}}"
+                            Style="{StaticResource CollectionViewItemBorder}">
+                        <Border.Shadow>
+                            <Shadow Brush="Black" Offset="2,2" Radius="5" Opacity="0.3" />
+                        </Border.Shadow>
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="8"/>
+                        </Border.StrokeShape>
+                        <Border.Stroke>
+                            <SolidColorBrush Color="LightGray" />
+                        </Border.Stroke>
+                        
+                        <Grid ColumnDefinitions="*,Auto">
+                            <!-- Customer Information (Left Side) -->
+                            <VerticalStackLayout Grid.Column="0">
+                                <Label Text="{Binding FirstName}" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#1F2937"
+                                       FontSize="16" />
+                                <Label Text="{Binding LastName}" 
+                                       TextColor="#1F2937"
+                                       FontSize="14" />
+                                <Label Text="{Binding Email}" 
+                                       FontSize="12" 
+                                       TextColor="#6B7280" />
+                            </VerticalStackLayout>
+                            
+                            <!-- Bank Information (Right Side) -->
+                            <VerticalStackLayout Grid.Column="1" 
+                                                HorizontalOptions="End"
+                                                VerticalOptions="Center">
+                                <Label Text="{Binding Bank.BankName}" 
+                                       FontSize="12" 
+                                       TextColor="#1F2937"
+                                       FontAttributes="Bold"
+                                       HorizontalOptions="End" />
+                                       
+                                <Label Text="{Binding Accounts.Count, StringFormat='Accounts: {0}'}" 
+                                       FontSize="11" 
+                                       TextColor="#6B7280"
+                                       FontAttributes="None"
+                                       HorizontalOptions="End" />
+                                       
+                                <Label Text="{Binding CustomerType.Name}" 
+                                       FontSize="10" 
+                                       TextColor="#6B7280"
+                                       FontAttributes="Bold"
+                                       HorizontalOptions="End" />
+                            </VerticalStackLayout>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
+</views:BasePage>
