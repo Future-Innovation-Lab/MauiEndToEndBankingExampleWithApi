@@ -181,7 +181,57 @@ Success → Navigation back → Refresh Account Details
 - **CommunityToolkit.Mvvm** - MVVM helpers and commands
 - **SQLiteNetExtensions** - ORM with relationship support
 
-## 🏃‍♂️ How to Run
+## � Data Access Modes
+
+This app supports two interchangeable data access paths, both behind the `IBankingService` abstraction:
+
+1) Web API + SQL Server (default)
+      - MAUI calls a REST API via `HttpClient` (`BankingApiService`).
+      - The Web API uses EF Core with SQL Server (LocalDB by default) via `UseSqlServer`.
+      - Configuration:
+           - API base URL is set in `MauiBankingExercise/MauiProgram.cs` when registering `BankingApiService`.
+           - SQL Server connection string is in `BankingApi/appsettings.json` (`DefaultConnection`).
+
+2) Local SQLite (offline/dev mode)
+      - MAUI uses a local SQLite database via `sqlite-net-pcl` (`BankingDatabaseService`).
+      - Seed data is inserted by `DatabaseSeederService`.
+
+### Toggle which mode to use
+
+Edit `MauiBankingExercise/MauiProgram.cs` and set the flag:
+
+```csharp
+// Choose which implementation to use for IBankingService
+bool useApiService = true; // true = Web API + SQL Server, false = Local SQLite
+```
+
+When `true`, `IBankingService` resolves to `BankingApiService` with the base URL:
+
+```csharp
+builder.Services.AddSingleton<BankingApiService>(provider =>
+{
+          var httpClient = provider.GetRequiredService<HttpClient>();
+          return new BankingApiService(httpClient, "https://banking-api-3p7pr7x7j4wvc.azurewebsites.net");
+});
+```
+
+When `false`, it resolves to `BankingDatabaseService` (local SQLite file `banking.db`).
+
+### SQL Server connection (Web API)
+
+The Web API uses SQL Server LocalDB by default. You can override the connection string in `BankingApi/appsettings.json`:
+
+```json
+{
+     "ConnectionStrings": {
+          "DefaultConnection": "Server=(localdb)\\MSSQLLocalDB;Database=BankingApiDB;Trusted_Connection=true;MultipleActiveResultSets=true"
+     }
+}
+```
+
+Or set `ConnectionStrings:DefaultConnection` via environment variables for deployment.
+
+## �🏃‍♂️ How to Run
 
 1. **Prerequisites**:
      - .NET 9.0 SDK
