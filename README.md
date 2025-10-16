@@ -44,63 +44,29 @@ This .NET MAUI application implements a complete banking system using the MVVM p
 
 ### Diagram
 
-```mermaid
-flowchart TB
-     %% Layers
-     subgraph UI[Views (XAML Pages)]
-          CustomersView[CustomersView]
-          CustomerDashboardView[CustomerDashboardView]
-          AccountDetailsView[AccountDetailsView]
-          CreateTransactionView[CreateTransactionView]
-     end
+```
+                                                                 Architecture (High Level)
+                                                                 ========================
 
-     subgraph VM[ViewModels]
-          CustomersVM[CustomersViewModel]
-          CustomerDashboardVM[CustomerDashboardViewModel]
-          AccountDetailsVM[AccountDetailsViewModel]
-          CreateTransactionVM[CreateTransactionViewModel]
-     end
++--------------------------+        +---------------------+        +-------------------------+        +----------------------+
+|        Views (XAML)      | <----> |     ViewModels      | -----> |     Services / Data     | -----> |   SQLite Database    |
+|                          |        |                     |        |  BankingDatabaseService |        |  Customer            |
+|  - CustomersView         |        |  - CustomersVM      |        |  DatabaseSeederService  |        |  Account             |
+|  - CustomerDashboardView |        |  - CustomerDashVM   |        +-------------------------+        |  Transaction         |
+|  - AccountDetailsView    |        |  - AccountDetailsVM |                                          |  TransactionType     |
+|  - CreateTransactionView |        |  - CreateTxnVM      |                                          +----------------------+
++--------------------------+        +---------------------+
 
-     subgraph SVC[Services / Data Access]
-          BankingDb[BankingDatabaseService]
-          Seeder[DatabaseSeederService]
-     end
+Legend:
+     <----> Two-way data binding (XAML bindings)
+     -----> Command/Query calls (async methods)
 
-     subgraph DB[SQLite Database]
-          TblCustomer[(Customer)]
-          TblAccount[(Account)]
-          TblTransaction[(Transaction)]
-          TblTxnType[(TransactionType)]
-     end
+Navigation (App Shell routes):
+     CustomersView -> CustomerDashboardView -> AccountDetailsView -> CreateTransactionView
 
-     Shell[App Shell Navigation]
-
-     %% Bindings (two-way)
-     CustomersView <--> CustomersVM
-     CustomerDashboardView <--> CustomerDashboardVM
-     AccountDetailsView <--> AccountDetailsVM
-     CreateTransactionView <--> CreateTransactionVM
-
-     %% Navigation
-     Shell -. routes .-> CustomersView
-     CustomersView -. select customer .-> CustomerDashboardView
-     CustomerDashboardView -. select account .-> AccountDetailsView
-     AccountDetailsView -. create transaction .-> CreateTransactionView
-
-     %% VM to Services
-     CustomersVM -->|queries, commands| BankingDb
-     CustomerDashboardVM --> BankingDb
-     AccountDetailsVM --> BankingDb
-     CreateTransactionVM -->|validation + submit| BankingDb
-
-     %% Services to DB
-     BankingDb --> TblCustomer
-     BankingDb --> TblAccount
-     BankingDb --> TblTransaction
-     BankingDb --> TblTxnType
-
-     %% Support
-     Seeder -. dev/test data .-> DB
+Data Flow:
+     ViewModels -> BankingDatabaseService -> SQLite tables (Customer, Account, Transaction, TransactionType)
+     DatabaseSeederService -> seeds development/test data
 ```
 
 ### MVVM Pattern Implementation
